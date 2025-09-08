@@ -4,9 +4,7 @@
 
 ## User settings
 xcuserdata/
-**/DerivedData/**
-*/*.DS_STORE
-.DS_Store
+DerivedData/
 
 ## Obj-C/Swift specific
 *.hmap
@@ -63,3 +61,4 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+

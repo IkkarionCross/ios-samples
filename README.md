@@ -1,2 +1,3 @@
-# ios-samples
-Examples of iOS development
+# iOS Samples
+
+A repository of iOS studies and explorations.
