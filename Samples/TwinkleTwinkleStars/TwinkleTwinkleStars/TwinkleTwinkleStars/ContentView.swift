@@ -9,7 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
     
-    class Star: ObservableObject {
+    class Star: ObservableObject, Identifiable, Hashable {
+        
+        static func == (lhs: ContentView.Star, rhs: ContentView.Star) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(initialOpacity)
+            hasher.combine(id)
+
+        }
+        
+        @Published
         var opacity: Double
         let initialOpacity: Double
         let freq: Double
@@ -20,8 +32,7 @@ struct ContentView: View {
         private(set) var y: CGFloat
         
         private var shouldTwinkle: Bool {
-            let rnd = Double.random(in: 0.0...1.0)
-            return rnd > 0.98
+            return Double.random(in: 0.0...1.0)  > 0.98
         }
         
         private static var lastDate: Date? = nil
@@ -44,8 +55,7 @@ struct ContentView: View {
             let delta =  Star.lastDate!.distance(to: Date())
             
             if shouldTwinkle {
-                let wave = sin(delta * freq) * initialOpacity
-                self.opacity = wave
+                self.opacity = sin(delta * freq) * initialOpacity
             }
             
         }
