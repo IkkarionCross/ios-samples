@@ -42,6 +42,8 @@ GeometryReader { proxy in
 
 ```
 
+![Shader stars](./image/swiftui_stars.gif)
+
 If we check the code it`s easy do spot some problems. First, we are drawing a lot of views and them animating each one of them. If this were a true app with an scroll view view and content being displayed we would be seing a very slow app.
 
 ## Canvas and TimelineView
@@ -103,6 +105,8 @@ func twinkle(time: Date) {
 
 With the twinkle method the star can animate using a oscilator function like sin to go from 0 to 1 opacity and back, thus achieving our desired effect. 
 
+![Shader stars](./image/canvas_stars.gif)
+
 With less cpu:
 
 ![CPU Canvas](./image/canvas_cpu_usage.png)
@@ -110,3 +114,78 @@ With less cpu:
 And less animation and drwaing overhead:
 
 ![Profiling Canvas](./image/canvas_profiling.png)
+
+## Shader
+
+Shader are visual effects that run in the GPU. We can use that effect with the `.colorEffect` modifier inside a SwiftUI view.
+
+I found this shader: https://www.shadertoy.com/view/lsfGWH. Then I converted it to metal, changing litle things:
+
+
+```C
+
+[[ stitchable ]] half4 starfieldShader(
+    float2 position,
+    float2 size,
+    float time
+)
+{
+    float starSize = 10.0;
+    float prob = 0.9;
+
+    float2 pos = floor((1.0 / starSize) * position.xy);
+
+    float color = 0.0;
+    float starValue = rand(pos);
+
+    if (starValue > prob)
+    {
+        float2 center = starSize * pos + float2(starSize, starSize) * 0.5;
+
+        float t = 0.9 + 0.8 * sin(time + (starValue - prob) / (1.0 - prob) * 20);
+
+        color = 1.0 - distance(position.xy, center) / (0.5 * starSize);
+        color = color * t / (abs(position.y - center.y)) * t / (abs(position.x - center.x));
+    }
+    else if (rand(position.xy / size.xy) > 0.96)
+    {
+        float r = rand(position.xy);
+        color = r * (1.2 * sin(time * (r * 8.0) + size.x * r) + 0.75);
+        
+    }
+
+    return half4(half3(color), 1.0);
+}
+
+```
+
+With the shader in place, I created the shader file. Now it`s possibile to use the modifier to access what the shader can do:
+
+```Swift
+
+var body: some View {
+        GeometryReader { proxy in
+            TimelineView(.animation) { context in
+                ZStack {
+                    Rectangle()
+                        .fill(Color.black)
+                        .stroke(Color.black)
+                        .colorEffect(
+                            ShaderLibrary.starfieldShader(.float(startDate.timeIntervalSinceNow))
+                        )
+                }
+            }
+        }
+    }
+
+```
+
+![Shader stars](./image/shader_stars.gif)
+
+Litle code and best performance:
+
+![CPU Shader](./image/shader_cpu.png)
+
+![SwiftU Profiling Shader](./image/shader_swiftui_profiling.png)
+
+![Metal Profiling Shader](./image/shader_metal_profiling.png)

@@ -11,9 +11,9 @@ import SwiftUI
 struct TwinkleTwinkleStarsApp: App {
     var body: some Scene {
         WindowGroup {
-//            ContentView()
+            ContentView()
 //            CircleViewBackgroundStars()
-            ShaderBackgroundStars()
+//            ShaderBackgroundStars()
                 .preferredColorScheme(.dark)
         }
     }
