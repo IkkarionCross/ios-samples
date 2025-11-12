@@ -12,7 +12,8 @@ struct TwinkleTwinkleStarsApp: App {
     var body: some Scene {
         WindowGroup {
 //            ContentView()
-            CircleViewBackgroundStars()
+//            CircleViewBackgroundStars()
+            ShaderBackgroundStars()
                 .preferredColorScheme(.dark)
         }
     }
