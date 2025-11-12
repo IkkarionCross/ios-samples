@@ -1,4 +1,4 @@
-# TimelineView Example [DRAFT]
+# TimelineView Example
 
 This litle experiment was born from the idea "how to make animated backgrounds with SwiftUI". Sure, one could use metal and shaders to apply the desired effect, but I was looking for a away to do this without using shaders.
 
