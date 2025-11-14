@@ -11,9 +11,35 @@ import SwiftUI
 struct TwinkleTwinkleStarsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
-//            CircleViewBackgroundStars()
-//            ShaderBackgroundStars()
+            NavigationView {
+                VStack{
+                    NavigationLink(destination: CanvasBackgroundStars()) {
+                        Text("Canvas Background Stars")
+                            .font(.title2)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    NavigationLink(destination: CircleViewBackgroundStars()) {
+                        Text("Circle Background Stars")
+                            .font(.title2)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    NavigationLink(destination: ShaderBackgroundStars()) {
+                        Text("Shader Background Stars")
+                            .font(.title2)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
+                
+            }
                 .preferredColorScheme(.dark)
         }
     }

@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct CanvasBackgroundStars: View {
     
     class Star: ObservableObject, Identifiable, Hashable {
         
-        static func == (lhs: ContentView.Star, rhs: ContentView.Star) -> Bool {
+        static func == (lhs: CanvasBackgroundStars.Star, rhs: CanvasBackgroundStars.Star) -> Bool {
             lhs.id == rhs.id
         }
         
@@ -103,6 +103,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    CanvasBackgroundStars()
         .preferredColorScheme(.dark)
 }

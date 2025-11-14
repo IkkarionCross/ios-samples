@@ -9,7 +9,7 @@ import SwiftUI
 
 class StarsViewModel: ObservableObject {
     @Published
-    var stars: [ContentView.Star] = ContentView.Star.create()
+    var stars: [CanvasBackgroundStars.Star] = CanvasBackgroundStars.Star.create()
 }
 
 struct CircleViewBackgroundStars: View {
