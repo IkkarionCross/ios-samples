@@ -6,9 +6,9 @@ A **WebSocket** is a persistent, bidirectional connection between a server and a
 
 ### Example: Fetching messages from a backend chat service
 
-```http
+~~~http
 GET api.mychat.com/chat/{chat_id}/messages
-```
+~~~
 
 
 In an iOS app, you’d typically model this request with URLSession. It handles opening the connection, performing the handshake, and closing it. However, that communication happens over HTTP — a protocol designed for fetching resources, not for continuous, real-time updates.
@@ -24,16 +24,16 @@ This project demonstrates how to use Swift’s async/await and concurrency featu
 
 To initialize a WebSocket in Swift/iOS, you can use:
 
-```Swift
+~~~Swift
 URLSession(configuration: .default)
     .webSocketTask(with: URL(string: "wss://echo.websocket.org/")!)
-```
+~~~
 
 > Note: echo.websocket.org is a public test server. It simply echoes back any message you send.
 
 It’s good practice to isolate connection setup in a factory or core library. Here’s a simple example:
 
-```Swift
+~~~Swift
 public struct WebSocketSessionFactory: WebSocketSessionFactoryProtocol {
     public static func make() -> WebSocketSessionProtocol {
         URLSession(configuration: .default)
@@ -41,11 +41,11 @@ public struct WebSocketSessionFactory: WebSocketSessionFactoryProtocol {
     }
 }
 
-```
+~~~
 
 Notice the protocol WebSocketSessionProtocol. This abstraction makes testing easier, since Apple’s APIs often need to be mocked.
 
-```Swift
+~~~Swift
 
 public protocol WebSocketSessionProtocol: Sendable {
     @MainActor
@@ -59,13 +59,13 @@ public protocol WebSocketSessionProtocol: Sendable {
 
 extension URLSessionWebSocketTask: WebSocketSessionProtocol {}
 
-```
+~~~
 
 ## Codable Support
 
 Since JSON is the most common format for exchanging data, we’ll use Codable to send and receive messages.
 
-```Swift
+~~~Swift
 
 internal protocol WebSocketCodableServiceProtocol: Sendable {
     associatedtype Receiving: Decodable & Sendable
@@ -77,13 +77,13 @@ internal protocol WebSocketCodableServiceProtocol: Sendable {
     func receive() -> AsyncThrowingStream<Receiving, Error>
 }
 
-```
+~~~
 
 ## Receiving Messages
 
 The receive method returns an AsyncThrowingStream, which continuously waits for new messages:
 
-```Swift
+~~~Swift
 func receive() -> AsyncThrowingStream<Receiving, Error> {
     AsyncThrowingStream { [weak self] in
         guard let self else { return nil }
@@ -96,11 +96,11 @@ func receive() -> AsyncThrowingStream<Receiving, Error> {
         return Task.isCancelled ? nil : message
     }
 }
-```
+~~~
 
 The helper listenForMessages decodes messages and delegates to the WebSocket API:
 
-```Swift
+~~~Swift
 func listenForMessages() async throws -> Receiving {
     guard let message = try await webSocket?.receive() else {
         throw NSError(domain: "WebSocket may be nil", code: -1)
@@ -116,26 +116,26 @@ func listenForMessages() async throws -> Receiving {
         throw NSError(domain: "Unknown message type", code: -1)
     }
 }
-```
+~~~
 Here, any unexpected message cancels the WebSocket and throws an error.
 
 ## Sending Messages
 
 Sending is straightforward:
 
-```Swift`
+~~~Swift`
 func sendMessage(_ message: Sending) async throws {
     let encodedMessage = try encoder.encode(message)
     let wsMessage = URLSessionWebSocketTask.Message.data(encodedMessage)
     try await self.webSocket?.send(wsMessage)
 }
-```
+~~~
 
 ## Ping–Pong (Keep-Alive)
 
 WebSockets require periodic ping–pong messages to keep connections alive:
 
-```Swift
+~~~Swift
 self.timer = Timer.scheduledTimer(
     timeInterval: 3.0,
     target: self,
@@ -155,7 +155,7 @@ private func sendPing() async {
         }
     }
 }
-```
+~~~
 
 ### Concurrency Considerations
 
@@ -163,7 +163,7 @@ Where does this code run — main thread or background?
 
 Notice the use of `@MainActor``. For example, in our service:
 
-```Swift
+~~~Swift
 public final class WebSocketCodableService<
     Sending: Encodable & Sendable,
     Receiving: Decodable & Sendable
@@ -194,7 +194,7 @@ public final class WebSocketCodableService<
         timer?.invalidate()
     }
 }
-```
+~~~
 
 - webSocket must be isolated to the MainActor because the service is Sendable, and mutable state must be actor-isolated.
 
@@ -207,7 +207,7 @@ public final class WebSocketCodableService<
 
 Here, we explicitly hop back to the MainActor because both disconnect and onPingFailed are MainActor-isolated.
 
-```Swift
+~~~Swift
 @objc
 private func sendPing() async {
     await webSocket?.sendPing { error in
@@ -219,4 +219,4 @@ private func sendPing() async {
         }
     }
 }
-```
+~~~

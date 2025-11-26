@@ -15,7 +15,7 @@ If you don`t know what is a thread or what is concurrency I recommend you readin
 
 Bellow there is a wrapper around a simple warpper around a dictionary and a code that calls it concurrently.
 
-```Swift 
+~~~swift
 let notSafeDict = NotThreadSafeKeyValueStore()
 DispatchQueue.concurrentPerform(iterations: 20) { index in
     notSafeDict.setValue("Value \(index)", forKey: "Key \(index)")
@@ -41,7 +41,7 @@ class NotThreadSafeKeyValueStore {
     }
     
 }
-```
+~~~
 
 The above code give an EXEC_BAD_ACCESS error. But what that means?
 
@@ -53,7 +53,7 @@ In the above code we are doing exactaly that, we are starting multiple threads a
 
 If the code is breaking because of two threads are trying to access the same resource at the same time, what can we do to solve it? Well, we could make the threads access the resource one thread at a time. This is called serializing access.
 
-```Swift 
+~~~Swift 
 
 class NotThreadSafeKeyValueStore {
     
@@ -80,15 +80,15 @@ class NotThreadSafeKeyValueStore {
     
 }
 
-```
+~~~
 
 In the above code we create a private DispatchQueue which is serial, that is it will run all the operations one at a time. But if we try to run our code, it`s still gives the BAD_EXEC_ACCESSS error. Why is that?
 
-Remenber that thread problems comes from writing and reading. In the above code we are synchronizing the writing, but not telling that it must serialize. We need to add the `flags: .barrier` property. 
+Remenber that thread problems comes from writing and reading. In the above code we are synchronizing the writing, but not telling that it must serialize. We need to add the **flags: .barrier** property. 
 
 Besides that we need to synchronize the reading to. This will enable our reading to be thread safe also.
 
-```Swift 
+~~~Swift 
 
 class NotThreadSafeKeyValueStore {
     
@@ -117,15 +117,15 @@ class NotThreadSafeKeyValueStore {
     
 }
 
-```
+~~~
 
-It`s still doesn`t work. That`s because our printAll method is accessing the dictionary directly, because of that it needs to be synchronized to!
+It's still doesn't work. That's because our printAll method is accessing the dictionary directly, because of that it needs to be synchronized to!
 
 # Solving with Swift Concurrency
 
 Swift Concurrency introduced a bunch of new keywords and more safety to the language. It adds a layer over threading that gives all programmers more security and confidence when wrinting concurrent code. Let`s re-write our example.
 
-```Swift 
+~~~Swift 
 final class NotThreadSafeKeyValueStore {
     
     @MainActor
@@ -148,14 +148,14 @@ final class NotThreadSafeKeyValueStore {
     
 }
 
-```
+~~~
 
 The first thing we can do is isolate our code to a global actor. That is, whenever we are inside an actor our context is serial. The @MainActor does exactly that. It isolates our mutating state to the global main actor and this will make our code serial.
 
-A more elagant solution is o use the new `actor` object. It`s the same of class and struct, but actors deals with the synchronization for us by serializing the wrinting and synchronizing the reading.
+A more elagant solution is o use the new **actor** object. It`s the same of class and struct, but actors deals with the synchronization for us by serializing the wrinting and synchronizing the reading.
 
 
-```Swift 
+~~~Swift 
 final actor NotThreadSafeKeyValueStore {
     
     private var dict: [String: String] = [:]
@@ -176,14 +176,14 @@ final actor NotThreadSafeKeyValueStore {
     
 }
 
-```
+~~~
 
 # Bonus: locks
 
 We also can use a lock. A lock is a simple structure exactly like a semaphore, it will stop the traffic (a therad) while giving permission to another thread to access the protected resource.
 
 
-```Swift 
+~~~Swift 
 
 class NotThreadSafeKeyValueStore {
     
@@ -211,7 +211,7 @@ class NotThreadSafeKeyValueStore {
     
 }
 
-```
+~~~
 
 # Final words and book recommendation
 
