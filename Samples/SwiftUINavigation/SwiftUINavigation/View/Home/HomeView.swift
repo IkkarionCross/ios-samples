@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import RecentLinks
 
 internal struct HomeView: View {
     @Environment(\.modelContext)

@@ -17,7 +17,7 @@ As one can see there is a lot going on with the core animation and view renderin
 And it`s no surprise to see cpu usage and memory going high with this approach.
 
 
-~~~Swift
+~~~swift
 
 GeometryReader { proxy in
     ZStack {
@@ -52,7 +52,7 @@ Another approach to reach the desired effect is to use Canvas. SwiftUI blank scr
 
 Nothing moves without time being around to calculate some displacement. To insert time into the equation there is the TimelineView. Which is a component that can be used to animate any SwiftUI component. What it does is to create a update loop, where it will call method inside a custom component to update things on the screen.
 
-~~~Swift
+~~~swift
 
 TimelineView(.animation) { timeline in
     Canvas { context, size in
@@ -86,7 +86,7 @@ As we can see the constructor of TimelineView takes just a TimelineSchedule type
 
 With .animation we let the system choose the appropriate time to update the component inside timeline and we provide a update method inside our star object.
 
-~~~Swift
+~~~swift
 
 func twinkle(time: Date) {
     if Star.lastDate == nil {
@@ -122,7 +122,7 @@ Shader are visual effects that run in the GPU. We can use that effect with the `
 I found this shader: https://www.shadertoy.com/view/lsfGWH. Then I converted it to metal, changing litle things:
 
 
-~~~C
+~~~c
 
 [[ stitchable ]] half4 starfieldShader(
     float2 position,
@@ -161,7 +161,7 @@ I found this shader: https://www.shadertoy.com/view/lsfGWH. Then I converted it 
 
 With the shader in place, I created the shader file. Now it`s possibile to use the modifier to access what the shader can do:
 
-~~~Swift
+~~~swift
 
 var body: some View {
         GeometryReader { proxy in
