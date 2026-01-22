@@ -1,4 +1,4 @@
-# TimelineView Example
+# TimelineView in SwiftUI
 
 This litle experiment was born from the idea "how to make animated backgrounds with SwiftUI". Sure, one could use metal and shaders to apply the desired effect, but I was looking for a away to do this without using shaders.
 
@@ -182,10 +182,22 @@ var body: some View {
 
 ![Shader stars](./image/shader_stars.gif)
 
-Litle code and best performance:
+### Litle code and best performance
+
+**CPU Profiling:**
 
 ![CPU Shader](./image/shader_cpu.png)
 
+**SwiftUI Profiling:**
+
 ![SwiftU Profiling Shader](./image/shader_swiftui_profiling.png)
 
+**Metal Profiling:**
+
 ![Metal Profiling Shader](./image/shader_metal_profiling.png)
+
+# Conclusion
+
+Effects in SwiftUI are prety easy to create with that many options. As time passes SwiftUI is more and more become easier than UIKit.
+
+Full project at [github.](https://github.com/IkkarionCross/ios-samples/blob/main/Samples/TwinkleTwinkleStars/README.md)
